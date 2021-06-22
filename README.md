@@ -1,7 +1,4 @@
-#SHOPPING SITE
+#CLOVER WEB
 
 Collaborators
-* Odilov shukurullo
 * Axmedov Isxoqjon
-* Egamberdiyev Mardonbek
-* Olimjon G'ofurov (Test uchun)
