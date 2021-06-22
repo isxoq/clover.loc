@@ -1,0 +1,146 @@
+<?php
+/**
+ * This is the template for generating a CRUD controller class file.
+ */
+
+use yii\db\ActiveRecordInterface;
+use yii\helpers\StringHelper;
+
+
+/* @var $this yii\web\View */
+/* @var $generator yii\gii\generators\crud\Generator */
+
+$controllerClass = StringHelper::basename($generator->controllerClass);
+$modelClass = StringHelper::basename($generator->modelClass);
+$searchModelClass = StringHelper::basename($generator->searchModelClass);
+if ($modelClass === $searchModelClass) {
+    $searchModelAlias = $searchModelClass . 'Search';
+}
+
+/* @var $class ActiveRecordInterface */
+$class = $generator->modelClass;
+$pks = $class::primaryKey();
+$urlParams = $generator->generateUrlParams();
+$actionParams = $generator->generateActionParams();
+$actionParamComments = $generator->generateActionParamComments();
+
+$isCrudController = ($generator->baseControllerClass == 'soft\web\AjaxCrudController' || $generator->baseControllerClass == 'soft\web\CrudController');
+
+echo "<?php\n";
+?>
+
+namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
+
+use Yii;
+use <?= ltrim($generator->modelClass, '\\') ?>;
+<?php if (!empty($generator->searchModelClass)): ?>
+use <?= ltrim($generator->searchModelClass, '\\') . (isset($searchModelAlias) ? " as $searchModelAlias" : "") ?>;
+<?php else: ?>
+use yii\data\ActiveDataProvider;
+<?php endif; ?>
+use <?= ltrim($generator->baseControllerClass, '\\') ?>;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+
+class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
+{
+    <?php if ($isCrudController): ?>
+
+    public $modelClass = '<?= $generator->modelClass ?>';
+
+    <?php endif ?>
+/*
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => \yii\filters\AccessControl::className(),
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['admin'],
+                        ],
+                ],
+            ],
+        ];
+    }
+    */
+
+
+    public function actionIndex()
+    {
+<?php if (!empty($generator->searchModelClass)): ?>
+        $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
+        $dataProvider = $searchModel->search();
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+<?php else: ?>
+        $dataProvider = new ActiveDataProvider([
+            'query' => <?= $modelClass ?>::find(),
+        ]);
+
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
+        ]);
+<?php endif; ?>
+    }
+
+<?php if(!$isCrudController): ?>
+    public function actionView(<?= $actionParams ?>)
+    {
+        $model = $this->findModel(<?= $actionParams ?>);
+        return $this->ajaxCrud->viewAction($model);
+    }
+<?php endif; ?>
+    public function actionCreate()
+    {
+        $model = new <?= $modelClass ?>();
+        return $this->ajaxCrud->createAction($model);
+    }
+<?php if(!$isCrudController): ?>
+    public function actionUpdate(<?= $actionParams ?>)
+    {
+        $model = $this->findModel($id);
+        return $this->ajaxCrud->updateAction($model);
+    }
+
+    public function actionDelete($id)
+    {
+        $this->checkIfRequestMethodIsPost();
+        $this->findModel($id)->delete();
+        return $this->ajaxCrud->closeModalResponse();
+    }
+
+    public function actionBulkdelete()
+    {
+        $this->checkIfRequestMethodIsPost();
+        $request = Yii::$app->request;
+        $pks = explode(',', $request->post('pks')); // Array or selected records primary keys
+        foreach ($pks as $pk) {
+            $model = $this->findModel($pk);
+            $model->delete();
+        }
+        return $this->ajaxCrud->closeModalResponse();
+    }
+
+    /**
+    * Finds a single model for crud actions
+    * @param $id
+    * @return <?= $modelClass ."\n"?>
+    * @throws yii\web\NotFoundHttpException
+    */
+    public function findModel($id)
+    {
+        /** @var <?= $modelClass ?> $model */
+        $model = <?= $modelClass ?>::find()->andWhere(['id' => $id])->one();
+        if ($model == null){
+            not_found();
+        }
+        return $model;
+    }
+    <?php endif ?>
+
+}

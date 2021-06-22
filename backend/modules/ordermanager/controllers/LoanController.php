@@ -1,0 +1,52 @@
+<?php
+
+namespace backend\modules\ordermanager\controllers;
+
+use Yii;
+use backend\modules\ordermanager\models\Loan;
+use backend\modules\ordermanager\models\LoanSearch;
+use soft\web\AjaxCrudController;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+
+class LoanController extends AjaxCrudController
+{
+    
+    public $modelClass = 'backend\modules\ordermanager\models\Loan';
+
+    /*
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => \yii\filters\AccessControl::className(),
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['admin'],
+                        ],
+                ],
+            ],
+        ];
+    }
+    */
+
+
+    public function actionIndex()
+    {
+        $searchModel = new LoanSearch();
+        $dataProvider = $searchModel->search();
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionCreate()
+    {
+        $model = new Loan();
+        return $this->ajaxCrud->createAction($model);
+    }
+
+}

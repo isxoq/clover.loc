@@ -1,0 +1,74 @@
+.help-block{
+    color: red;
+}
+.product-single .social-odnoklassniki:hover{
+    background-color:transparent;color:#f4731c!important;
+}
+.product-single .social-telegram:hover{
+    background-color:transparent;color:#0070e0!important;
+}
+
+
+/**
+* Product Detail sahifasidagi cart btn
+*/
+.product-form .detail-btn-cart {
+    border: 0;
+    flex: 1;
+    min-width: 13rem;
+    font-size: 1.4rem;
+    border-radius: .3rem;
+    background-color: #26c;
+    color: #fff;
+    cursor: pointer;
+    max-width: 20.7rem;
+    height: 4.5rem;
+}
+
+.product-details .detail-btn-cart {
+    flex: 1;
+    height: 4.2rem;
+    font-size: 1.3rem;
+    transition: color .3s, background-color .3s, border-color .3s;
+    z-index: 1;
+}
+
+.product-details .detail-btn-cart {
+    display: block;
+    line-height: 3.3;
+    padding: 0 .6em;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-right: 5px;
+    border-radius: .3rem;
+}
+
+.product-form .detail-btn-cart i {
+    margin-right: .8rem;
+    margin-top: -1px;
+    font-size: 1.8rem;
+    line-height: 0;
+}
+
+/***** Product Detail sahifasidagi cart btn ended ******/
+
+/**
+* view-cart sahifasidagi quantity input
+*/
+.cart .shop-table .custom-quantity.form-control {
+    font-weight: 700;
+}
+.custom-quantity {
+    -moz-appearance: textfield;
+    max-width: 48px;
+}
+/***** quantity input end ******/
+
+.product-detail-old-price span {
+    margin-bottom: 1rem;
+    color: #999;
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -.025em;
+}
